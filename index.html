@@ -234,11 +234,11 @@ fr:{
  copied:"Copié",selected:"Sélectionné : fais Ctrl+C",imported:"Progression importée",invalid:"Ce code n'est pas valide.",resetDone:"Remis à zéro",
  locale:"fr-FR"
 }};
-let lang="en";try{const l=localStorage.getItem("urodojo_lang");if(l==="fr"||l==="en")lang=l;}catch(e){}
+let lang="en";
 let DATA=lang==="fr"?DATA_FR:DATA_EN;
-const t=(k,...a)=>{const s=T[lang][k]??T.en[k]??k;return typeof s==="function"?s(...a):s;};
+const t=(k,...a)=>{const s=T.en[k]??T.en[k]??k;return typeof s==="function"?s(...a):s;};
 function setLang(l){if(l!=="fr"&&l!=="en")return;lang=l;DATA=l==="fr"?DATA_FR:DATA_EN;try{localStorage.setItem("urodojo_lang",l);}catch(e){}document.documentElement.lang=l;render();}
-function langSwitch(big){return `<div class="langsw ${big?"big":""}" role="group" aria-label="${esc(t("language"))}"><button data-lang="en" class="${lang==="en"?"on":""}">English</button><button data-lang="fr" class="${lang==="fr"?"on":""}">Français</button></div>`;}
+function langSwitch(big){return "";}
 document.documentElement.lang=lang;
 const PAGES=[
  {id:"home",ic:"🏠"},{id:"cours",ic:"🎓"},{id:"quiz",ic:"⚡"},{id:"cartes",ic:"🃏"},{id:"atelier",ic:"✍️"},{id:"glossaire",ic:"📖"}
@@ -301,7 +301,7 @@ function pbMerge(a, b) {
 }
 if (typeof module !== "undefined") module.exports = { pbMerge };
 
-const SYNC_URL=""; // vide = pas de synchro cloud (la progression reste dans ce navigateur)
+const SYNC_URL="https://script.google.com/macros/s/AKfycbzpfzWZ3R93R2bMQ3qjt9Oxl3JIbve3_S8FpKoZVy4WXIt4sHapxf7562UpxcW6wygE/exec"; // vide = pas de synchro cloud (la progression reste dans ce navigateur)
 const cloud={state:SYNC_URL?"idle":"off",at:null};
 const canon=o=>Array.isArray(o)?o.map(canon):(o&&typeof o==="object"?Object.keys(o).sort().reduce((r,k)=>(r[k]=canon(o[k]),r),{}):o);
 const sameState=(a,b)=>JSON.stringify(canon(a))===JSON.stringify(canon(b));
@@ -370,7 +370,7 @@ function updateBadges(){renderNav();}
 document.addEventListener("click",e=>{const b=e.target.closest("[data-go]");if(b){go(b.dataset.go);}const sw=e.target.closest("[data-switch]");if(sw)switchProfile();const lg=e.target.closest("[data-lang]");if(lg)setLang(lg.dataset.lang);});
 
 /* ---------- Views ---------- */
-function chooser(v){v.innerHTML=`<div class="hero"><div class="bowl">🥋</div><div><div class="eyebrow">Uromend Dojo</div><h1>${t("whoPlays")}</h1><p style="color:var(--fg2)">${t("eachOwn")}</p></div></div><div class="list">${PROFILES.map(n=>`<button class="item" data-profile="${esc(n)}"><span class="ic" style="font-size:1.4rem">🥋</span><span class="t">${esc(n)}</span><span class="m">${(()=>{try{const r=JSON.parse(localStorage.getItem("urodojo_"+n.replace(/\s+/g,"_"))||"null");return r?r.xp+" XP":t("newPlayer");}catch(e){return "";}})()}</span></button>`).join("")}</div><div><div class="eyebrow" style="margin-bottom:6px">${t("language")}</div>${langSwitch(true)}</div>`;v.querySelectorAll("[data-profile]").forEach(b=>b.onclick=()=>{PROFILE=b.dataset.profile;try{localStorage.setItem("urodojo_profile",PROFILE);}catch(e){}S=load();dbDoc=null;page="home";render();touchDay();save();connectDb();cloudSync(false);});}
+function chooser(v){v.innerHTML=`<div class="hero"><div class="bowl">🥋</div><div><div class="eyebrow">Uromend Dojo</div><h1>${t("whoPlays")}</h1><p style="color:var(--fg2)">${t("eachOwn")}</p></div></div><div class="list">${PROFILES.map(n=>`<button class="item" data-profile="${esc(n)}"><span class="ic" style="font-size:1.4rem">🥋</span><span class="t">${esc(n)}</span><span class="m">${(()=>{try{const r=JSON.parse(localStorage.getItem("urodojo_"+n.replace(/\s+/g,"_"))||"null");return r?r.xp+" XP":t("newPlayer");}catch(e){return "";}})()}</span></button>`).join("")}</div>`;v.querySelectorAll("[data-profile]").forEach(b=>b.onclick=()=>{PROFILE=b.dataset.profile;try{localStorage.setItem("urodojo_profile",PROFILE);}catch(e){}S=load();dbDoc=null;page="home";render();touchDay();save();connectDb();cloudSync(false);});}
 function switchProfile(){PROFILE=null;try{localStorage.removeItem("urodojo_profile");}catch(e){}dbDoc=null;render();}
 function render(){const v=$("#view");v.innerHTML="";if(!PROFILE){$("#rail").innerHTML="";$("#tabbar").innerHTML="";chooser(v);return;}renderNav();({home,cours,quiz,cartes,labo,atelier,glossaire})[page](v);}
 
@@ -389,7 +389,7 @@ function home(v){
  <div class="card"><div class="row" style="justify-content:space-between"><div class="eyebrow">${t("player")}</div><button class="btn small" data-switch>${t("switchPlayer")}</button></div><p style="margin-top:6px"><b>${esc(PROFILE)}</b></p></div>
  <div class="card"><div class="eyebrow">${t("badgesT")}</div><div class="row" style="margin-top:10px">${BADGES.map(b=>`<span class="pill ${S.badges.includes(b.id)?"gold":""}" title="${esc(badgeDesc(b))}">${S.badges.includes(b.id)?"🏅 ":"○ "}${esc(badgeName(b))}</span>`).join("")}</div></div>
  <div class="card flat"><div class="eyebrow">${t("howT")}</div><div class="prose" style="margin-top:8px">${t("how")}</div></div>
- <div class="card flat"><div class="eyebrow">${t("language")}</div><div style="margin-top:8px">${langSwitch(true)}</div></div>`;
+ `;
  $("#missionBtn").onclick=()=>mission.go();
 }
 function pickMission(){
