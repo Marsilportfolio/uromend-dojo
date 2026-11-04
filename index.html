@@ -108,7 +108,7 @@ textarea{min-height:120px;resize:vertical}
 .timeline div{background:var(--bg3);border-radius:6px;padding:8px;text-align:center;font-size:.8rem}
 .timeline div b{display:block;font-family:var(--mono);font-size:.95rem}
 .timeline div.cur{background:var(--gold2);border:1px solid var(--gold)}
-.sr-only{position:absolute;left:-9999px}
+.sr-only{position:absolute;left:-9999px} .goat{display:inline-flex;flex-direction:column;align-items:center;margin-left:10px;line-height:1}.goat img{width:46px;height:auto}.goat b{font-family:var(--mono);font-size:.62rem;letter-spacing:.12em;color:var(--warn);margin-top:2px}
 @media (max-width:820px){
   .app{grid-template-columns:1fr}
   nav.rail{display:none}
@@ -370,7 +370,7 @@ function updateBadges(){renderNav();}
 document.addEventListener("click",e=>{const b=e.target.closest("[data-go]");if(b){go(b.dataset.go);}const sw=e.target.closest("[data-switch]");if(sw)switchProfile();const lg=e.target.closest("[data-lang]");if(lg)setLang(lg.dataset.lang);});
 
 /* ---------- Views ---------- */
-function chooser(v){v.innerHTML=`<div class="hero"><div class="bowl">🥋</div><div><div class="eyebrow">Uromend Dojo</div><h1>${t("whoPlays")}</h1><p style="color:var(--fg2)">${t("eachOwn")}</p></div></div><div class="list">${PROFILES.map(n=>`<button class="item" data-profile="${esc(n)}"><span class="ic" style="font-size:1.4rem">🥋</span><span class="t">${esc(n)}</span><span class="m">${(()=>{try{const r=JSON.parse(localStorage.getItem("urodojo_"+n.replace(/\s+/g,"_"))||"null");return r?r.xp+" XP":t("newPlayer");}catch(e){return "";}})()}</span></button>`).join("")}</div>`;v.querySelectorAll("[data-profile]").forEach(b=>b.onclick=()=>{PROFILE=b.dataset.profile;try{localStorage.setItem("urodojo_profile",PROFILE);}catch(e){}S=load();dbDoc=null;page="home";render();touchDay();save();connectDb();cloudSync(false);});}
+function chooser(v){v.innerHTML=`<div class="hero"><div class="bowl">🥋</div><div><div class="eyebrow">Uromend Dojo</div><h1>${t("whoPlays")}</h1><p style="color:var(--fg2)">${t("eachOwn")}</p></div></div><div class="list">${PROFILES.map(n=>`<button class="item" data-profile="${esc(n)}"><span class="ic" style="font-size:1.4rem">🥋</span><span class="t">${esc(n)}</span><span class="m">${(()=>{try{const r=JSON.parse(localStorage.getItem("urodojo_"+n.replace(/\s+/g,"_"))||"null");return r?r.xp+" XP":t("newPlayer");}catch(e){return "";}})()}</span></button>`).join("")}</div>`;v.querySelectorAll("[data-profile]").forEach(b=>b.onclick=()=>{PROFILE=b.dataset.profile;try{localStorage.setItem("urodojo_profile",PROFILE);}catch(e){}S=load();dbDoc=null;page="home";render();touchDay();save();connectDb();cloudSync(false);});if(SYNC_URL){fetch(SYNC_URL+"?action=board").then(r=>r.json()).then(j=>{const b=(j&&j.board)||{};const top=Math.max(0,...PROFILES.map(n=>b[n]||0));PROFILES.forEach(n=>{const el=v.querySelector('[data-profile="'+n+'"] .m');if(el&&b[n]!=null){el.textContent=b[n]+" XP";if(top>0&&b[n]===top){const g=document.createElement("span");g.className="goat";g.innerHTML='<img src="goat.png" alt="GOAT"><b>GOAT</b>';el.after(g);}}});}).catch(()=>{});}}
 function switchProfile(){PROFILE=null;try{localStorage.removeItem("urodojo_profile");}catch(e){}dbDoc=null;render();}
 function render(){const v=$("#view");v.innerHTML="";if(!PROFILE){$("#rail").innerHTML="";$("#tabbar").innerHTML="";chooser(v);return;}renderNav();({home,cours,quiz,cartes,labo,atelier,glossaire})[page](v);}
 
