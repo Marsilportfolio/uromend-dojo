@@ -248,7 +248,7 @@ const lvlKey=l=>({facile:"easy",moyen:"medium",difficile:"hard"})[l]||l;
 
 /* ---------- State (localStorage + optional db sync), shared by both languages ---------- */
 const DEFAULT={xp:0,streak:0,lastDay:null,days:[],lessons:{},quiz:{},cards:{},labo:{},atelier:{},badges:[],version:1};
-const PROFILES=["Hatim","Jacob","Minh","Omar Ouda","Saad","Stjepan","Jeric","Andres","Dominic"];
+const PROFILES=["Hatim","Jacob","Minh","Omar Ouda","Saad","Stjepan","Jeric","Andres","Dominic","Zazou"];
 let PROFILE=null;try{PROFILE=localStorage.getItem("urodojo_profile");}catch(e){}
 if(PROFILE&&!PROFILES.includes(PROFILE))PROFILE=null;
 const KEY=()=>"urodojo_"+(PROFILE||"").replace(/\s+/g,"_");
